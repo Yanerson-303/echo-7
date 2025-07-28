@@ -8,3 +8,4 @@ window.echo7Storage = {
         return JSON.parse(localStorage.getItem(`echo7_${key}`) || 'null');
     }
 };
+                                                                                                                                              
