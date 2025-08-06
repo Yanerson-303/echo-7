@@ -1,359 +1,261 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Olympus Behavior Cards</title>
-    <style>
-        body {
-            font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, serif;
-            background: linear-gradient(to right, #0f0c29, #302b63, #24243e);
-            color: #f8f8f2;
-            padding: 20px;
-        }
-        
-        h1 {
-            text-align: center;
-            color: #f8d56b;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-            margin-bottom: 30px;
-            font-size: 2.5em;
-        }
-        
-        .cards-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 25px;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-        
-        .card {
-            width: 300px;
-            background: rgba(30, 30, 50, 0.8);
-            border-radius: 15px;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-            overflow: hidden;
-            transition: transform 0.3s, box-shadow 0.3s;
-            position: relative;
-            border: 2px solid #44475a;
-        }
-        
-        .card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
-        }
-        
-        .card-header {
-            background: linear-gradient(to right, #6272a4, #44475a);
-            padding: 15px;
-            text-align: center;
-            border-bottom: 2px solid #f8d56b;
-        }
-        
-        .god-name {
-            font-size: 1.5em;
-            font-weight: bold;
-            color: #f8f8f2;
-            margin: 0;
-        }
-        
-        .god-title {
-            font-style: italic;
-            color: #bd93f9;
-            margin: 5px 0 0;
-            font-size: 0.9em;
-        }
-        
-        .card-body {
-            padding: 15px;
-        }
-        
-        .trait {
-            margin-bottom: 12px;
-            padding-bottom: 12px;
-            border-bottom: 1px dashed #44475a;
-        }
-        
-        .trait:last-child {
-            margin-bottom: 0;
-            padding-bottom: 0;
-            border-bottom: none;
-        }
-        
-        .trait-title {
-            color: #ff79c6;
-            font-weight: bold;
-            margin-bottom: 5px;
-            display: flex;
-            align-items: center;
-        }
-        
-        .trait-icon {
-            margin-right: 8px;
-            color: #f8d56b;
-        }
-        
-        .trait-description {
-            font-size: 0.9em;
-            line-height: 1.4;
-        }
-        
-        .phases {
-            margin-top: 15px;
-        }
-        
-        .phase {
-            margin-bottom: 8px;
-            position: relative;
-            padding-left: 20px;
-            font-size: 0.85em;
-        }
-        
-        .phase:before {
-            content: "•";
-            color: #50fa7b;
-            position: absolute;
-            left: 0;
-            font-size: 1.2em;
-        }
-        
-        .card-footer {
-            background: rgba(40, 40, 60, 0.7);
-            padding: 10px 15px;
-            font-size: 0.8em;
-            text-align: center;
-            color: #bd93f9;
-            border-top: 1px solid #44475a;
-        }
-        
-        .hidden {
-            display: none;
-        }
-        
-        .controls {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        
-        button {
-            background: #6272a4;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            margin: 0 5px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-        
-        button:hover {
-            background: #44475a;
-        }
-        
-        .element-icon {
-            width: 20px;
-            height: 20px;
-            display: inline-block;
-            margin-right: 5px;
-            vertical-align: middle;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>Survival 2D Game</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      font-family: sans-serif;
+    }
+    canvas {
+      display: block;
+      background-color: #4caf50;
+    }
+    #ui {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      color: white;
+      z-index: 2;
+    }
+    #minimap {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      border: 2px solid white;
+      background: #111;
+      width: 150px;
+      height: 150px;
+    }
+    #inventory {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(0,0,0,0.7);
+      display: flex;
+      padding: 5px;
+      gap: 5px;
+      justify-content: center;
+    }
+    .item {
+      width: 40px;
+      height: 40px;
+      background: gray;
+      border: 2px solid white;
+      cursor: pointer;
+    }
+    .selected {
+      border: 2px solid yellow;
+    }
+    .bar {
+      width: 200px;
+      height: 15px;
+      background: red;
+      margin: 5px 0;
+      border: 1px solid #fff;
+      position: relative;
+    }
+    .bar-inner {
+      height: 100%;
+      background: limegreen;
+    }
+  </style>
 </head>
 <body>
-    <h1>Olympus Behavior Cards</h1>
-    
-    <div class="controls">
-        <button id="show-all">Show All Cards</button>
-        <button id="hide-all">Hide All Cards</button>
-    </div>
-    
-    <div class="cards-container">
-        <!-- Dionysus Card -->
-        <div class="card" id="dionysus">
-            <div class="card-header">
-                <h2 class="god-name">Dionysus</h2>
-                <p class="god-title">God of Indulgence and Detachment</p>
-            </div>
-            <div class="card-body">
-                <div class="trait">
-                    <div class="trait-title"><span class="trait-icon">🍷</span>Divine Traits</div>
-                    <div class="trait-description">
-                        Weakness against sweet offerings. Emotional detachment. Objective problem-solving with no regard for emotions.
-                    </div>
-                </div>
-                <div class="trait">
-                    <div class="trait-title"><span class="trait-icon">⚡</span>Sacred Rituals</div>
-                    <div class="trait-description">
-                        Shows attachment to repairing damaged temple items, even if relatively inexpensive.
-                    </div>
-                </div>
-            </div>
-            <div class="card-footer">
-                When challenged, quickly escalates from verbal to emotional manipulation
-            </div>
-        </div>
-        
-        <!-- Hera Card -->
-        <div class="card" id="hera">
-            <div class="card-header">
-                <h2 class="god-name">Hera</h2>
-                <p class="god-title">Goddess of Wrath and Manipulation</p>
-            </div>
-            <div class="card-body">
-                <div class="trait">
-                    <div class="trait-title"><span class="trait-icon">👑</span>Divine Traits</div>
-                    <div class="trait-description">
-                        Wrath ignites when demands aren't met. Raises divine voice when ignored. Alternates between honeyed words and thunderous threats.
-                    </div>
-                </div>
-                <div class="trait">
-                    <div class="trait-title"><span class="trait-icon">🌀</span>Wrath Phases</div>
-                    <div class="phases">
-                        <div class="phase">Voice of Olympus - Raises tone to command respect</div>
-                        <div class="phase">Emotional Storms - Indirect criticisms and past favor reminders</div>
-                        <div class="phase">Chorus of Fury - Seeks divine allies to support her rage</div>
-                        <div class="phase">Temple Weapons - Uses nearby sacred objects as threats</div>
-                        <div class="phase">Divine Retreat - Withdraws briefly to Mount Olympus</div>
-                        <div class="phase">Forced Compliance - Yields but stores resentment</div>
-                        <div class="phase">Seeking Oracles - Justifies actions to other gods</div>
-                    </div>
-                </div>
-            </div>
-            <div class="card-footer">
-                After storms, turns ire to unrelated temple visitors, poisoning the sacred atmosphere
-            </div>
-        </div>
-        
-        <!-- Apollo Card -->
-        <div class="card" id="apollo">
-            <div class="card-header">
-                <h2 class="god-name">Apollo</h2>
-                <p class="god-title">God of Mediation and Harmony</p>
-            </div>
-            <div class="card-body">
-                <div class="trait">
-                    <div class="trait-title"><span class="trait-icon">⚖️</span>Divine Traits</div>
-                    <div class="trait-description">
-                        First reaction is to intervene in divine conflicts. Analyzes disruptions to Olympian peace. Offers solutions at personal cost.
-                    </div>
-                </div>
-                <div class="trait">
-                    <div class="trait-title"><span class="trait-icon">💔</span>Sacred Weakness</div>
-                    <div class="trait-description">
-                        Shows deep concern for temple harmony, requiring ambrosia for his divine heart palpitations.
-                    </div>
-                </div>
-            </div>
-            <div class="card-footer">
-                Seeks to restore balance to the divine household at any cost
-            </div>
-        </div>
-        
-        <!-- Artemis Card -->
-        <div class="card" id="artemis">
-            <div class="card-header">
-                <h2 class="god-name">Artemis</h2>
-                <p class="god-title">Goddess of Solitude and Withdrawal</p>
-            </div>
-            <div class="card-body">
-                <div class="trait">
-                    <div class="trait-title"><span class="trait-icon">🌙</span>Divine Traits</div>
-                    <div class="trait-description">
-                        First reaction is to retreat to sacred groves. Avoids divine conflicts. Only speaks after storms pass.
-                    </div>
-                </div>
-                <div class="trait">
-                    <div class="trait-title"><span class="trait-icon">🏹</span>Sacred Rituals</div>
-                    <div class="trait-description">
-                        Refuses to share divine gifts. Seeks only personal boons before vanishing into the night.
-                    </div>
-                </div>
-            </div>
-            <div class="card-footer">
-                The solitary huntress who avoids all divine drama
-            </div>
-        </div>
-        
-        <!-- Hades Card -->
-        <div class="card" id="hades">
-            <div class="card-header">
-                <h2 class="god-name">Hades</h2>
-                <p class="god-title">God of Calm and Contentment</p>
-            </div>
-            <div class="card-body">
-                <div class="trait">
-                    <div class="trait-title"><span class="trait-icon">💀</span>Divine Traits</div>
-                    <div class="trait-description">
-                        Maintains underworld calm. De-stresses in his realm with sacred smoke. Tests divine coffers before making plans.
-                    </div>
-                </div>
-                <div class="trait">
-                    <div class="trait-title"><span class="trait-icon">🛌</span>Sacred Rituals</div>
-                    <div class="trait-description">
-                        Requires much divine rest. Finds comfort in his underworld domain. Has a sacred bond with Cerberus.
-                    </div>
-                </div>
-                <div class="trait">
-                    <div class="trait-title"><span class="trait-icon">🍰</span>Divine Skills</div>
-                    <div class="trait-description">
-                        Master of underworld feasts, especially ambrosia desserts. Marks territory subtly without disturbance.
-                    </div>
-                </div>
-            </div>
-            <div class="card-footer">
-                The contented ruler of the underworld
-            </div>
-        </div>
-    </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Get all cards
-            const cards = document.querySelectorAll('.card');
-            
-            // Show all cards
-            document.getElementById('show-all').addEventListener('click', function() {
-                cards.forEach(card => {
-                    card.style.display = 'block';
-                });
-            });
-            
-            // Hide all cards
-            document.getElementById('hide-all').addEventListener('click', function() {
-                cards.forEach(card => {
-                    card.style.display = 'none';
-                });
-            });
-            
-            // Add hover effects
-            cards.forEach(card => {
-                card.addEventListener('mouseenter', function() {
-                    this.style.transform = 'translateY(-10px)';
-                    this.style.boxShadow = '0 15px 30px rgba(0, 0, 0, 0.4)';
-                });
-                
-                card.addEventListener('mouseleave', function() {
-                    this.style.transform = 'translateY(0)';
-                    this.style.boxShadow = '0 10px 20px rgba(0, 0, 0, 0.3)';
-                });
-            });
-            
-            // Randomly arrange cards on load
-            function shuffleCards() {
-                const container = document.querySelector('.cards-container');
-                const cardsArray = Array.from(container.children);
-                
-                // Shuffle array
-                for (let i = cardsArray.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    container.appendChild(container.children[j]);
-                }
-            }
-            
-            shuffleCards();
-        });
-    </script>
+<canvas id="gameCanvas" width="800" height="600"></canvas>
+
+<div id="ui">
+  <div>Vida</div>
+  <div class="bar"><div id="vidaBar" class="bar-inner" style="width: 100%;"></div></div>
+  <div>Energía</div>
+  <div class="bar"><div id="energiaBar" class="bar-inner" style="width: 100%; background: yellow;"></div></div>
+</div>
+
+<canvas id="minimap" width="150" height="150"></canvas>
+
+<div id="inventory">
+  <div class="item selected" data-item="pistola"></div>
+  <div class="item" data-item="comida"></div>
+  <div class="item" data-item="agua"></div>
+</div>
+
+<script>
+// === Configuración de mapa ===
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+const WIDTH = canvas.width;
+const HEIGHT = canvas.height;
+
+const worldSize = 2000;
+const minimap = document.getElementById('minimap');
+const miniCtx = minimap.getContext('2d');
+
+// === Jugador ===
+const player = {
+  x: 1000,
+  y: 1000,
+  size: 20,
+  speed: 3,
+  color: '#ff4444',
+  vida: 100,
+  energia: 100
+};
+
+// === Movimiento ===
+const keys = {};
+document.addEventListener('keydown', e => keys[e.key.toLowerCase()] = true);
+document.addEventListener('keyup', e => keys[e.key.toLowerCase()] = false);
+
+// === Inventario ===
+let selectedItem = 'pistola';
+document.querySelectorAll('.item').forEach(item => {
+  item.addEventListener('click', () => {
+    document.querySelectorAll('.item').forEach(i => i.classList.remove('selected'));
+    item.classList.add('selected');
+    selectedItem = item.dataset.item;
+  });
+});
+
+// === Disparos ===
+const bullets = [];
+document.addEventListener('click', () => {
+  if (selectedItem === 'pistola') {
+    bullets.push({ x: player.x, y: player.y, dx: Math.cos(angle), dy: Math.sin(angle), size: 5 });
+  }
+});
+
+// === Enemigos ===
+const enemies = [];
+for (let i = 0; i < 10; i++) {
+  enemies.push({
+    x: Math.random() * worldSize,
+    y: Math.random() * worldSize,
+    size: 20,
+    alive: true
+  });
+}
+
+// === Árboles ===
+const trees = [];
+for (let i = 0; i < 100; i++) {
+  trees.push({ x: Math.random() * worldSize, y: Math.random() * worldSize, size: 30 });
+}
+
+// === Loop de juego ===
+let angle = 0;
+
+function update() {
+  // Movimiento
+  if (keys['w']) player.y -= player.speed;
+  if (keys['s']) player.y += player.speed;
+  if (keys['a']) player.x -= player.speed;
+  if (keys['d']) player.x += player.speed;
+
+  // Límite del mapa
+  player.x = Math.max(0, Math.min(worldSize, player.x));
+  player.y = Math.max(0, Math.min(worldSize, player.y));
+
+  // Energía baja
+  if (keys['w'] || keys['s'] || keys['a'] || keys['d']) {
+    player.energia = Math.max(0, player.energia - 0.2);
+  } else {
+    player.energia = Math.min(100, player.energia + 0.5);
+  }
+
+  // Disparos
+  bullets.forEach(b => {
+    b.x += b.dx * 6;
+    b.y += b.dy * 6;
+  });
+
+  // Colisión de balas con enemigos
+  enemies.forEach(e => {
+    bullets.forEach(b => {
+      const dx = e.x - b.x;
+      const dy = e.y - b.y;
+      if (e.alive && Math.hypot(dx, dy) < e.size) {
+        e.alive = false;
+      }
+    });
+  });
+}
+
+function draw() {
+  ctx.clearRect(0, 0, WIDTH, HEIGHT);
+  ctx.save();
+
+  // Cámara
+  const camX = player.x - WIDTH / 2;
+  const camY = player.y - HEIGHT / 2;
+  ctx.translate(-camX, -camY);
+
+  // Árboles
+  ctx.fillStyle = "#2e7d32";
+  trees.forEach(t => ctx.fillRect(t.x - t.size/2, t.y - t.size/2, t.size, t.size));
+
+  // Enemigos
+  enemies.forEach(e => {
+    if (e.alive) {
+      ctx.fillStyle = "black";
+      ctx.beginPath();
+      ctx.arc(e.x, e.y, e.size/2, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  });
+
+  // Balas
+  ctx.fillStyle = "yellow";
+  bullets.forEach(b => ctx.fillRect(b.x - 2, b.y - 2, 4, 4));
+
+  // Jugador
+  ctx.fillStyle = player.color;
+  ctx.beginPath();
+  ctx.arc(player.x, player.y, player.size / 2, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Ángulo del mouse (simulado al centro)
+  const centerX = camX + WIDTH / 2;
+  const centerY = camY + HEIGHT / 2;
+  angle = Math.atan2(centerY - player.y, centerX - player.x);
+
+  ctx.restore();
+
+  // UI
+  document.getElementById("vidaBar").style.width = player.vida + "%";
+  document.getElementById("energiaBar").style.width = player.energia + "%";
+
+  drawMiniMap();
+}
+
+function drawMiniMap() {
+  miniCtx.clearRect(0, 0, 150, 150);
+  miniCtx.fillStyle = "#2e7d32";
+  trees.forEach(t => {
+    miniCtx.fillRect(t.x / worldSize * 150, t.y / worldSize * 150, 2, 2);
+  });
+
+  miniCtx.fillStyle = "black";
+  enemies.forEach(e => {
+    if (e.alive)
+      miniCtx.fillRect(e.x / worldSize * 150, e.y / worldSize * 150, 3, 3);
+  });
+
+  miniCtx.fillStyle = "red";
+  miniCtx.fillRect(player.x / worldSize * 150, player.y / worldSize * 150, 4, 4);
+}
+
+function loop() {
+  update();
+  draw();
+  requestAnimationFrame(loop);
+}
+loop();
+</script>
+
 </body>
 </html>
